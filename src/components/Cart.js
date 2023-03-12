@@ -79,6 +79,22 @@ export const getTotalCartValue = (items = []) => {
 };
 
 
+// TODO: CRIO_TASK_MODULE_CHECKOUT - Implement function to return total cart quantity
+/**
+ * Return the sum of quantities of all products added to the cart
+ *
+ * @param { Array.<CartItem> } items
+ *    Array of objects with complete data on products in cart
+ *
+ * @returns { Number }
+ *    Total quantity of products added to the cart
+ *
+ */
+export const getTotalItems = (items = []) => {
+  return items.reduce((n, {qty}) => qty + n, 0)
+};
+
+// TODO: CRIO_TASK_MODULE_CHECKOUT - Add static quantity view for Checkout page cart
 /**
  * Component to display the current quantity for a product and + and - buttons to update product quantity on cart
  * 
@@ -91,6 +107,8 @@ export const getTotalCartValue = (items = []) => {
  * @param {Function} handleDelete
  *    Handler function which reduces the quantity of a product in cart by 1
  * 
+ * @param {Boolean} isReadOnly
+ *    If product quantity on cart is to be displayed as read only without the + - options to change quantity
  * 
  */
 const ItemQuantity = ({
@@ -125,12 +143,15 @@ const ItemQuantity = ({
  * @param {Function} handleDelete
  *    Current quantity of product in cart
  * 
+ * @param {Boolean} isReadOnly
+ *    If product quantity on cart is to be displayed as read only without the + - options to change quantity
  * 
  */
 const Cart = ({
   products,
   items = [],
   handleQuantity,
+  isReadOnly
 }) => {
   let history = useHistory();
   
@@ -176,6 +197,7 @@ const Cart = ({
                     justifyContent="space-between"
                     alignItems="center"
                 >
+                  {isReadOnly === undefined ?
                 <ItemQuantity
                 // Add required props by checking implementation
                 handleAdd= { () => handleQuantity(
@@ -196,6 +218,13 @@ const Cart = ({
                 )}
                 value={item.qty}
                 />
+                  :
+                  <Stack direction="row" alignItems="center">
+                    <Box padding="0.5rem" data-testid="item-qty">
+                      Qty: {item.qty}
+                    </Box>
+                  </Stack>
+                  }
                 <Box padding="0.5rem" fontWeight="700">
                     ${item.cost}
                 </Box>
@@ -224,17 +253,19 @@ const Cart = ({
           </Box>
         </Box>
 
-        <Box display="flex" justifyContent="flex-end" className="cart-footer">
-          <Button
-            color="primary"
-            variant="contained"
-            startIcon={<ShoppingCart />}
-            className="checkout-btn"
-            onClick={()=>history.push("/checkout")}
-          >
-            Checkout
-          </Button>
-        </Box>
+        {isReadOnly === undefined && (
+          <Box display="flex" justifyContent="flex-end" className="cart-footer">
+            <Button
+              color="primary"
+              variant="contained"
+              startIcon={<ShoppingCart />}
+              className="checkout-btn"
+              onClick={()=>history.push("/checkout")}
+            >
+              Checkout
+            </Button>
+          </Box>
+        )}
       </Box>
     </>
   );
