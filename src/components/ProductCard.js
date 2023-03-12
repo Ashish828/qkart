@@ -12,7 +12,7 @@ import { Box } from "@mui/system";
 import React from "react";
 import "./ProductCard.css";
 
-const ProductCard = ({ product, handleAddToCart }) => {
+const ProductCard = ({ product, handleAddToCart, products, items }) => {
   return (
     <Card className="card">
       <CardMedia
@@ -30,12 +30,18 @@ const ProductCard = ({ product, handleAddToCart }) => {
       </CardContent>
       <CardActions>
         <Button
+        onClick={ () => handleAddToCart(
+          localStorage.getItem("token"),
+          items,
+          products,
+          product._id,
+          1,
+          { preventDuplicate: true }
+        )}
           className="explore-button"
             variant="contained"
             style={{color: "white",  width:"100%"}}
-          >
-            {handleAddToCart}
-          </Button>
+          >ADD TO CART</Button>
       </CardActions>
     </Card>
   );
